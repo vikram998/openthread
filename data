@@ -1,0 +1,20 @@
+
+make -f examples/Makefile-nrf52840 USB=1 BOOTLOADER=USB
+
+make -f examples/Makefile-nrf52840 BORDER_AGENT=1 BORDER_ROUTER=1 COMMISSIONER=1 UDP_PROXY=1 USB=1
+
+
+make -f examples/Makefile-nrf52840 COMMISSIONER=1 JOINER=1 COAP=1 DNS_CLIENT=1 MTD_NETDIAG=1 BORDER_ROUTER=1 MAC_FILTER=1 UDP_PROXY=1 BORDER_AGENT=1 LINK_RAW=1 SERVICE=1 USB=1 BOOTLOADER=1
+
+arm-none-eabi-objcopy -O ihex /home/vithorat/thread/openthread/output/nrf52840/bin/ot-rcp /home/vithorat/thread/openthread/output/nrf52840/bin/ot-rcp.hex
+
+
+/home/vithorat/.local/bin/nrfutil  pkg generate --hw-version 52 --sd-req 0x00 --application-version 1 --application output/nrf52840/bin/ot-rcp.hex  app_dfu_package.zip
+
+sudo /home/vithorat/.local/bin/nrfutil dfu usb-serial -pkg app_dfu_package.zip -p /dev/ttyACM0
+
+
+# Default settings for otbr-agent. This file is sourced by systemd
+
+# Options to pass to otbr-agent
+OTBR_AGENT_OPTS="-I wpan0 spinel+hdlc+uart:///dev/ttyACM0"
